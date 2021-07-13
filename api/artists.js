@@ -20,10 +20,6 @@ artistsRouter.param('artistId', (req, res, next, artistId) => {
     });
 });
 
-artistsRouter.get('/:artistId', (req, res, next) => {
-    return res.status(200).json({artist: req.artist});
-});
-
 artistsRouter.get('/', (req, res, next) => {
     db.all('SELECT * FROM Artist WHERE Artist.is_currently_employed = 1',
     (err, artists) => {
@@ -33,6 +29,10 @@ artistsRouter.get('/', (req, res, next) => {
             res.status(200).json({artists: artists});
         }
     });
+});
+
+artistsRouter.get('/:artistId', (req, res, next) => {
+    return res.status(200).json({artist: req.artist});
 });
 
 artistsRouter.post('/', (req, res, next) => {
@@ -50,18 +50,17 @@ artistsRouter.post('/', (req, res, next) => {
             $dateOfBirth: dateOfBirth,
             $biography: biography,
             $isCurrentlyEmployed: isCurrentlyEmployed
-        }, (err) => {
+        }, function(err){
             if(err) {
                 next(err);
             } else {
-                db.get('SELECT * FROM Artist WHERE Artist.id = ${this.lastID}',
+                db.get(`SELECT * FROM Artist WHERE Artist.id = ${this.lastID}`,
                 (err, newArtist) => {
                     res.status(201).json({artist: newArtist});
                 });
             }
-            }
-        );
-    }
+        }
+    )};
 });
 
 
