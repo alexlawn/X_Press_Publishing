@@ -40,7 +40,6 @@ artistsRouter.post('/', (req, res, next) => {
     const dateOfBirth = req.body.artist.dateOfBirth;
     const biography = req.body.artist.biography;
     const isCurrentlyEmployed = req.body.artist.isCurrentlyEmployed === 0 ? 0 : 1;
-
     if(!name || !dateOfBirth || !biography) {
         return res.sendStatus(400); // Bad request
     } else {
@@ -61,6 +60,32 @@ artistsRouter.post('/', (req, res, next) => {
             }
         }
     )};
+});
+
+artistsRouter.put('/:artistId', (req, res, next) => {
+    const name = req.body.artist.name;
+    const dateOfBirth = req.body.artist.dateOfBirth;
+    const biography = req.body.artist.biography;
+    const isCurrentlyEmployed = req.body.artist.isCurrentlyEmployed === 0 ? 0 : 1;
+    if(!name || !dateOfBirth || !biography){
+        return res.sendStatus(400);
+    } else {
+        db.run('UPDATE Artist SET name = $name, date_of_birth = $dateOfBirth, biography = $biography, is_currently_employed = $isCurrentlyEmployed WHERE Artist.id = $artistId',
+        {
+            $name: name,
+            $dateOfBirth: dateOfBirth,
+            $biography: biography,
+            $isCurrentlyEmployed: isCurrentlyEmployed,
+            $artistId: req.params.artistId
+        },
+        function(err, updatedArtist){
+            if(err){
+                next(err);
+            } else {
+                res.status(200).json({artist: updatedArtist});
+            }
+        });
+    }
 });
 
 
