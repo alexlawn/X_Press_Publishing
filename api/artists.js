@@ -23,16 +23,16 @@ artistsRouter.param('artistId', (req, res, next, artistId) => {
 artistsRouter.get('/', (req, res, next) => {
     db.all('SELECT * FROM Artist WHERE Artist.is_currently_employed = 1',
     (err, artists) => {
-        if(err){
+        if(err) {
             next(err); // Passes the error to the next middleware function in server.js which is "app.use(errorHandler());"
-        }else{
+        } else {
             res.status(200).json({artists: artists});
         }
     });
 });
 
 artistsRouter.get('/:artistId', (req, res, next) => {
-    return res.status(200).json({artist: req.artist});
+    res.status(200).json({artist: req.artist});
 });
 
 artistsRouter.post('/', (req, res, next) => {
@@ -78,14 +78,35 @@ artistsRouter.put('/:artistId', (req, res, next) => {
             $isCurrentlyEmployed: isCurrentlyEmployed,
             $artistId: req.params.artistId
         },
-        function(err, updatedArtist){
-            if(err){
+        (err) => {
+            if(err) {
                 next(err);
             } else {
-                res.status(200).json({artist: updatedArtist});
+                db.get(`SELECT * FROM Artist WHERE Artist.id = ${req.params.artistId}`, 
+                (err, updatedArtist) => {
+                    res.status(200).json({artist: updatedArtist});
+                });
             }
         });
     }
+});
+
+artistsRouter.delete('/:artistId', (req, res, next) => {
+    db.run(`UPDATE Artist SET is_currently_employed = $isCurrentlyEmployed WHERE Artist.id = $artistId`,
+    {
+        $isCurrentlyEmployed: 0,
+        $artistId: req.params.artistId
+    },
+    (err) => {
+        if(err) {
+            next(err);
+        } else {
+            db.get(`SELECT * FROM Artist WHERE Artist.id = ${req.params.artistId}`,
+            (err, artistUnemployed) => {
+                res.status(200).json({artist: artistUnemployed});
+            });
+        }
+    });
 });
 
 
