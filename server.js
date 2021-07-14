@@ -21,9 +21,6 @@ app.use(errorHandler());
 app.use(morgan('dev'));
 
 
-
-
-
 // Code to start the server listening at the PORT below
 app.listen(PORT, () => {
     console.log(`Server is listening on ${PORT}`);
