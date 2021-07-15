@@ -4,6 +4,8 @@ const seriesRouter = express.Router();
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
+const issuesRouter = require('./issues');
+
 //// This middleware function will be called whenever there is seriesId parameter in the url
 seriesRouter.param('seriesId', (req, res, next, seriesId) => {
     db.get(`SELECT * FROM Series WHERE Series.id = $seriesId`,
@@ -21,6 +23,8 @@ seriesRouter.param('seriesId', (req, res, next, seriesId) => {
         }
     });
 });
+
+seriesRouter.use('/:seriesId/issues', issuesRouter);
 
 seriesRouter.get('/', (req, res, next) => {
     db.all(`SELECT * FROM Series`,
