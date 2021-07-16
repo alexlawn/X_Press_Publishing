@@ -71,7 +71,8 @@ seriesRouter.put('/:seriesId', (req, res, next) => {
     if(!name || !description) {
         return res.sendStatus(400);
     } else {
-        db.run(`UPDATE Series SET name = $name, description = $description`, {
+        db.run(`UPDATE Series SET name = $name, description = $description`,
+        {
             $name: name,
             $description: description
         },
@@ -87,8 +88,6 @@ seriesRouter.put('/:seriesId', (req, res, next) => {
         });
     }
 });
-
-//
 
 
 
