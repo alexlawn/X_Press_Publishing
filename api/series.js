@@ -89,6 +89,32 @@ seriesRouter.put('/:seriesId', (req, res, next) => {
     }
 });
 
+seriesRouter.delete('/:seriesId', (req, res, next) => {
+    db.get(`SELECT * FROM Issue WHERE Issue.series_id = $seriesId`,
+    {
+        $seriesId: req.params.seriesId
+    },
+    (err, issue) => {
+        if(err) {
+            next(err);
+        } else if(issue) {
+            res.sendStatus(400); // bad request
+        } else {
+            db.run(`DELETE FROM Series WHERE Series.id = $seriesId`,
+            {
+                $seriesId: req.params.seriesId
+            },
+            (err) => {
+                if(err) {
+                    next(err);
+                } else {
+                    res.sendStatus(204);
+                }
+            });
+        }
+    });
+});
+
 
 
 module.exports = seriesRouter;
