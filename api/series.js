@@ -115,6 +115,4 @@ seriesRouter.delete('/:seriesId', (req, res, next) => {
     });
 });
 
-
-
 module.exports = seriesRouter;

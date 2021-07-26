@@ -116,7 +116,7 @@ issuesRouter.delete('/:issueId', (req, res, next) => {
         if(err) {
             next(err);
         } else {
-            res.status(204);
+            res.sendStatus(204);
         }
     });
 });
