@@ -108,7 +108,7 @@ seriesRouter.delete('/:seriesId', (req, res, next) => {
                 if(err) {
                     next(err);
                 } else {
-                    res.sendStatus(204);
+                    res.sendStatus(204); // No content. The server successfully processed the request, and is not returning any content
                 }
             });
         }
